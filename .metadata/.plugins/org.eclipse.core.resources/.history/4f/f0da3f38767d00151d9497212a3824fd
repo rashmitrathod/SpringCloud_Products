@@ -1,0 +1,16 @@
+server:
+  port: 8761
+
+info:
+  component: Discovery Server
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+
+logging:
+  level:
+    ROOT: WARN

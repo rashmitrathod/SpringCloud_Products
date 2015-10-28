@@ -1,0 +1,53 @@
+server:
+  port: 8761
+
+info:
+  component: Discovery Server
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+
+logging:
+  level:
+    ROOT: WARN
+
+---
+spring:
+  profiles: peer # not standalone
+eureka:
+  instance:
+    hostname: 127.0.1.1
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://user:${eureka.password}@127.0.0.1:8762/eureka/
+
+---
+spring:
+  profiles: other # not standalone
+server:
+  port: 8762
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    nonSecurePort: ${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://user:${eureka.password}@127.0.1.1:8761/eureka/
+
+---
+spring:
+  profiles: local # connect to remote peer
+eureka:
+  instance:
+    hostname: ${localhost.hostname:${localhost.ngrok}.ngrok.com}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://user:${eureka.password}@${PREFIX:}eureka.cfapps.io/eureka/

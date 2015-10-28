@@ -1,0 +1,65 @@
+buildscript {
+    ext {
+        springBootVersion = '1.2.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'docker'
+
+jar {
+    baseName = 'auth-server'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'callista'
+mainClassName = 'demo.AuthserverApplication'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile("org.springframework.boot:spring-boot-starter-undertow")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-security")
+
+    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.6.RELEASE")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module: 'commons-logging')
+    }
+    testCompile('org.apache.httpcomponents:httpclient:4.3.6') {
+        exclude(module: 'commons-logging')
+    }
+}
+
+distDocker {
+    exposePort 9999
+    setEnvironment 'JAVA_OPTS', '-Dspring.profiles.active=docker'
+}
+
+docker {
+    maintainer = 'Magnus Larsson <magnus.larsson.ml@gmail.com>'
+    baseImage = 'java:8'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

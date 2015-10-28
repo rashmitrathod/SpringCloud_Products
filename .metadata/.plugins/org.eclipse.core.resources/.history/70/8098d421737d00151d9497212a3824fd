@@ -1,0 +1,74 @@
+server:
+  port: 8765
+  ssl:
+    key-store: classpath:server.jks
+    key-store-password: password
+    key-password: password
+
+info:
+  component: Edge Server
+
+spring:
+  oauth2:
+    resource:
+      userInfoUri: https://localhost:9999/uaa/user
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 3
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${random.value}}}
+  client:
+    # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
+    registryFetchIntervalSeconds: 5
+    instanceInfoReplicationIntervalSeconds: 5
+    initialInstanceInfoReplicationIntervalSeconds: 5
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+zuul:
+  ignoredServices: "*"
+  prefix: /api
+  routes:
+    productapi: /product/**
+
+logging:
+  level:
+    ROOT: WARN
+    org.springframework.web: WARN
+    # Set DEBUG level on Hystrix to get an error message when a fallback method is used.
+    com.netflix.hystrix: DEBUG
+
+---
+# For deployment in Docker containers
+spring:
+  profiles: docker
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+
+---
+# For deployment in Cloud Foundry
+spring:
+  profiles: cloud
+  oauth2:
+    resource:
+      userInfoUri: https://ml-public-auth.cfapps.io/uaa/user
+
+eureka:
+  instance:
+    hostname: ${vcap.application.uris[0]:localhost}
+    nonSecurePort: 80
+  client:
+    serviceUrl:
+      defaultZone: http://ml-public-ds-1.cfapps.io/eureka/

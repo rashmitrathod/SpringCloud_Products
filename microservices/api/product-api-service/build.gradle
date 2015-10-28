@@ -1,0 +1,75 @@
+buildscript {
+    ext {
+        springBootVersion = '1.2.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'docker'
+
+jar {
+    baseName = 'product-api-service'
+    version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'callista'
+mainClassName = 'se.callista.microservices.api.product.ProductApiServiceApplication'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        // Can't find spring-cloud-build in maven central...
+        url 'http://maven.springframework.org/release'
+    }
+}
+
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile("org.springframework.boot:spring-boot-starter-undertow")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.cloud:spring-cloud-starter-hystrix:1.0.0.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-eureka:1.0.0.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-bus-amqp:1.0.0.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-netflix-hystrix-amqp:1.0.0.RELEASE")
+
+    compile("org.springframework.cloud:spring-cloud-starter-security:1.0.0.RELEASE")
+    compile("org.springframework.security.oauth:spring-security-oauth2:2.0.6.RELEASE")
+
+    compile("org.apache.httpcomponents:httpclient:4.2.1")
+    compile("org.apache.httpcomponents:fluent-hc:4.2.1")
+
+    compile("se.callista.microservises:util:0.0.1-SNAPSHOT")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+distDocker {
+    exposePort 8080
+    addFile 'src/main/resources/truststore.jks', 'truststore.jks'
+    setEnvironment 'JAVA_OPTS', '-Dspring.profiles.active=docker -Djavax.net.ssl.trustStore=truststore.jks -Djavax.net.ssl.trustStorePassword=password'
+}
+
+docker {
+    maintainer = 'Magnus Larsson <magnus.larsson.ml@gmail.com>'
+    baseImage = 'java:8'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

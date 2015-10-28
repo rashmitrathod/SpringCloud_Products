@@ -1,0 +1,82 @@
+buildscript {
+    ext {
+        springBootVersion = '1.2.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'maven-publish'
+apply plugin: 'docker'
+
+jar {
+    baseName = 'recommendation-service'
+    version = '0.0.1-SNAPSHOT'
+}
+
+// $ gradle publishToMavenLocal
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // TODO: Where to place these properties?
+            groupId 'se.callista.microservises.core.recommendation'
+            artifactId 'recommendation-service'
+            version '0.0.1-SNAPSHOT'
+
+            from components.java
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'callista'
+mainClassName = 'se.callista.microservises.core.recommendation.RecommendationServiceApplication'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        // Can't find spring-cloud-build in maven central...
+        url 'http://maven.springframework.org/release'
+    }
+}
+
+dependencies {
+    // TODO: Added ver no on the three core starter deps to make the maven plugin to work
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile("org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+    compile("org.springframework.cloud:spring-cloud-starter-hystrix:1.0.0.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-eureka:1.0.0.RELEASE")
+
+    compile("se.callista.microservises:util:0.0.1-SNAPSHOT")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+}
+
+distDocker {
+    exposePort 8080
+    setEnvironment 'JAVA_OPTS', '-Dspring.profiles.active=docker'
+}
+
+docker {
+    maintainer = 'Magnus Larsson <magnus.larsson.ml@gmail.com>'
+    baseImage = 'java:8'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

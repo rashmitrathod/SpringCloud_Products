@@ -1,0 +1,21 @@
+server:
+  port: 0
+
+info:
+  component: Product Core Service
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 3
+    metadataMap:
+      instanceId: eurekaserver
+  client:
+    # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
+    registryFetchIntervalSeconds: 5
+    instanceInfoReplicationIntervalSeconds: 5
+    initialInstanceInfoReplicationIntervalSeconds: 5
+
+logging:
+  level:
+    root: WARN
+    se.callista: INFO

@@ -1,0 +1,1 @@
+A sample project contains 3 microservices integrated with Eureka
