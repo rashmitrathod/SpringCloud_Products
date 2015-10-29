@@ -24,10 +24,10 @@ endpoints:
     sensitive: false
 
 zuul:
-  ignoredServices: "*"
-  prefix: /api
   routes:
-    productapi: /product/**
+    PRODUCT: /ps/**
+    RECOMMENDATION: /rc/** 
+    REVIEW: /rw/**
 
 logging:
   level:

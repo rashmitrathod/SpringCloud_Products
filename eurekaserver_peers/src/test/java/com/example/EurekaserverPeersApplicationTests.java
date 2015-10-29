@@ -6,8 +6,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ProductCompositeServiceApplication.class)
-public class ProductCompositeServiceApplicationTests {
+@SpringApplicationConfiguration(classes = EurekaserverPeersApplication.class)
+public class EurekaserverPeersApplicationTests {
 
 	@Test
 	public void contextLoads() {
