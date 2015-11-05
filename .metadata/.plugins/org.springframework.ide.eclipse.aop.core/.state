@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aop-reference-model>
 <aop-project name="utils"/>
-<aop-project name="histrixdemo"/>
 <aop-project name="product_composite_service"/>
 <aop-project name="review_service"/>
 <aop-project name="zuul_server"/>
 <aop-project name="product_service"/>
+<aop-project name="oauthsecurity1"/>
 <aop-project name="eureka_server"/>
 <aop-project name="recommendation_service"/>
 </aop-reference-model>

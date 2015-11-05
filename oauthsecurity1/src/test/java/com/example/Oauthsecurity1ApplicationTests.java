@@ -6,8 +6,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ProductApiServiceApplication.class)
-public class ProductApiServiceApplicationTests {
+@SpringApplicationConfiguration(classes = Oauthsecurity1Application.class)
+public class Oauthsecurity1ApplicationTests {
 
 	@Test
 	public void contextLoads() {
